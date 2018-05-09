@@ -49,6 +49,10 @@ char *insert_gen(char *s, int i, char c) {
 }
 
 void warray_append(warray_t *w, char *s) {
+    if(w->cap <= w->written) {
+        w->cap *= 2;
+        w->data = realloc(w->data, w->cap*sizeof(char));
+    }
     w->data[w->written] = s;
     w->written++;
 }
