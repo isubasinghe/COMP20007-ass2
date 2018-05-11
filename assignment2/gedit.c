@@ -60,19 +60,19 @@ void warray_append(warray_t *w, char *s) {
 warray_t gen_edit_one(char *s) {
     int slen = strlen(s);
     warray_t warray;
-    warray.cap = slen + 26*(slen+1) + 26*slen;
+    warray.cap = slen + ALPHABET_SIZE*(slen+INSERTION_SIZE) + 26*slen;
     warray.data = (char **) malloc(warray.cap*sizeof(char *));
     warray.written = 0;
     
     for(int i=0; i < slen; i++) {
         warray_append(&warray, delete_gen(s, i));
-        for(int j='a'; j <= 'z'; j++) {
+        for(int j=ASCII_START; j <= ASCII_END; j++) {
             warray_append(&warray, insert_gen(s, i, j));
             warray_append(&warray, edit_gen(s, i,j));
         }
     }
 
-    for(int i='a'; i <= 'z'; i++) {
+    for(int i=ASCII_START; i <= ASCII_END; i++) {
         warray_append(&warray, insert_gen(s, slen, i));
     }
 

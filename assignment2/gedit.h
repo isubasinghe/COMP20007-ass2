@@ -1,9 +1,11 @@
 #ifndef GEDIT_H
 #define GEDIT_H
 
-#define ASCII_START
+#define ASCII_START 'a'
+#define ASCII_END 'z'
 
-#define ASCII_END
+#define ALPHABET_SIZE 26
+#define INSERTION_SIZE 1
 
 #include <stdio.h>
 #include <stdlib.h>
