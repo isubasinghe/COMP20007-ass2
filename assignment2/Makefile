@@ -6,10 +6,10 @@
 #
 
 CC     = gcc
-CFLAGS = -Wall -std=c99 -lm -O3
+CFLAGS = -Wall -std=c99 -lm
 # modify the flags here ^
 EXE    = a2
-OBJ    = main.o list.o spell.o lshtein.o hash.o htable.o gedit.o
+OBJ    = main.o list.o spell.o lshtein.o hash.o htable.o gedit.o warray.o
 # add any new object files here ^
 
 # top (default) target
@@ -27,6 +27,7 @@ lshtein.o: lshtein.h
 gedit.o: gedit.h
 hash.o: hash.h
 htable.o: htable.h
+warray.o: warray.h
 
 # ^ add any new dependencies here (for example if you add new modules)
 

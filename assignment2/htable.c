@@ -2,6 +2,7 @@
 
 htable_t *new_hash_table(int size) {
     htable_t *table = malloc(sizeof(htable_t));
+    
     table->nslots = size;
     table->slots = malloc(size*sizeof(slot_t));
     table->seed = SEED;
@@ -14,36 +15,43 @@ htable_t *new_hash_table(int size) {
     return table;
 }
 
-void move_to_front(slot_t *slot, int i) {
-    char *tmpkey = slot->keys[i];
-    int tmpval = slot->vals[i];
-    slot->keys[i] = slot->keys[0];
-    slot->vals[i] = slot->vals[0];
-    slot->keys[0] = tmpkey;
-    slot->vals[0] = tmpval;
-}
 
 bool slot_has(slot_t *slot, char *s) {
+    #ifdef PTHREADS
+    pthread_mutex_lock(&slot->mut);
+    #endif // PTHREADS
     bool in = 0;
     for(int i=0; i < slot->written; i++) {
         if(strcmp(slot->keys[i], s)==0) {
-            move_to_front(slot, i);
+            #ifdef PTHREADS
+            pthread_mutex_unlock(&slot->mut);
+            #endif // PTHREADS
             return 1;
         }
     }
+    #ifdef PTHREADS
+    pthread_mutex_unlock(&slot->mut);
+    #endif // PTHREADS
     return in;
 }
 
 int slot_gets(slot_t *slot, char *s, int *err) {
-
+    #ifdef PTHREADS
+    pthread_mutex_lock(&slot->mut);
+    #endif // PTHREADS
     *err = -1;
     for(int i = 0; i < slot->written; i++) {
         if(strcmp(slot->keys[i], s) == 0) {
             *err = 0;
-            move_to_front(slot, i);
+            #ifdef PTHREADS
+            pthread_mutex_unlock(&slot->mut);
+            #endif // PTHREADS
             return slot->vals[i];
         }
     }
+    #ifdef PTHREADS
+    pthread_mutex_unlock(&slot->mut);
+    #endif // PTHREADS
     return -1;
 }
 
@@ -65,11 +73,13 @@ int hash_table_gets(htable_t *table, char *s, int *error) {
     int slot = xorhash(s, table->seed, table->nslots);
     return slot_gets(&table->slots[slot], s, write);
 
-
 }
 
 
 void insert_to_slot(slot_t *slot, char *s, int val) {
+    #ifdef PTHREADS
+    pthread_mutex_lock(&slot->mut);
+    #endif // PTHREADS
     if(slot->keys == NULL) {
         slot->cap = INITAL_SIZE;
         slot->keys = malloc(INITAL_SIZE*sizeof(char *));
@@ -87,7 +97,10 @@ void insert_to_slot(slot_t *slot, char *s, int val) {
     slot->keys[slot->written] = cpy;
     slot->vals[slot->written] = val;
     slot->written++;
-    move_to_front(slot, slot->written-1);
+    
+    #ifdef PTHREADS
+    pthread_mutex_unlock(&slot->mut);
+    #endif // PTHREADS
 }
 
 void hash_table_put(htable_t *table, char *key, int val) {

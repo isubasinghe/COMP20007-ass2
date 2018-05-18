@@ -11,21 +11,23 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct{
-    char **data;
-    int written;
-    int cap;
-} warray_t;
+#include "warray.h"
 
-warray_t gen_edit_one(char *);
 
-char *delete_gen(char *s, int i);
+warray_t *gen_edit_one(char *);
 
-char *insert_gen(char *s, int i, char c);
+warray_t *gen_edit_over(warray_t *);
 
-char *edit_gen(char *s, int i, char c);
 
-void free_warray(warray_t *w);
+char *delete_gen(char *, int, int );
+
+char *insert_gen(char *, int, int , char );
+
+char *edit_gen(char *s, int, int , char );
+
+void free_warray(warray_t *);
+
+
 
 
 #endif // GEDIT_H
