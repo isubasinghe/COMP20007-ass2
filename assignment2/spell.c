@@ -74,6 +74,18 @@ bool warray_in_hash(htable_t *table, warray_t *w) {
 
 bool string_in_hash(htable_t *table, char *s) {
 	bool in = 0;
+	int slen = strlen(s);
+	for(int i=0; i < table->nkeys; i++) {
+		char *word = table->keys[i];
+		int wlen = strlen(word);
+		if(abs(slen - wlen) <= 3) {
+			if(ldist(word, s)==3) {
+				printf("%s\n", word);
+				return 1;
+			}
+		}
+
+	}
 	return in;
 }
 
@@ -85,28 +97,58 @@ void print_corrected(List *dictionary, List *document) {
 	Node *curr = dictionary->head;
 	int i = 1;
 	while(curr != NULL) {
+		
 		hash_table_put(htable, (char *)curr->data, i);
 		i++;
 		curr = curr->next;
 	}
-	/*
+	
 	curr = document->head;
 
+	
+	
 	while(curr != NULL) {
-		warray_t *leven1 = gen_edit_one((char *)curr->data);
-		warray_t *l = new_warray();
-		for(int i=0; i < leven1->written; i++) {
-			warray_t *leven2 = gen_edit_one(leven1->data[i]);
-			for(int j=0; j < leven2->written; j++) {
+		if(hash_table_has(htable, (char *)curr->data)) {
+			printf("%s\n", (char *)curr->data);
+		}else {
+			warray_t *leven1 = gen_edit_one((char *)curr->data);
+			int found = 0;
+			found = warray_in_hash(htable, leven1);
+
+			if(!found) {
+				warray_t *leven2 = new_warray();
+
+				for(int i=0; i< leven1->written; i++) {
+					warray_t *tmp = gen_edit_one(leven1->data[i]);
+
+					for(int j=0; j < tmp->written; j++) {
+						warray_append(leven2, tmp->data[j]);
+					}
+					free(tmp->data);
+					free(tmp);
+				}
+
+				found = warray_in_hash(htable, leven2);
+
+				if(!found) {
+					found = string_in_hash(htable, (char *)curr->data);
+				}
+
+				if(!found) {
+					printf("%s?\n", (char *) curr->data);
+				}
+
 				
+
+				free_warray(leven2);
 			}
-			free_warray(leven2);
+
+			free_warray(leven1);
 		}
-		free_warray(l);
-		free_warray(leven1);
+
 		curr = curr->next;
 	}
-	*/
+	
 
 	free_hash_table(htable);
 }

@@ -6,7 +6,7 @@
 #
 
 CC     = gcc
-CFLAGS = -Wall -std=c99 -lm
+CFLAGS = -Wall -std=c99 -lm -O3
 # modify the flags here ^
 EXE    = a2
 OBJ    = main.o list.o spell.o lshtein.o hash.o htable.o gedit.o warray.o

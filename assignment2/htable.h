@@ -5,7 +5,7 @@
 
 #define SEED 73802
 #ifndef INITAL_SIZE
-#define INITAL_SIZE 128
+#define INITAL_SIZE 2
 #endif // INITIAL_SIZE
 
 #include <stdio.h>
@@ -37,6 +37,8 @@ typedef struct {
     slot_t *slots;
     int nslots;
     int seed;
+    char **keys;
+    int nkeys;
 } htable_t;
 
 #ifdef PTHREADS

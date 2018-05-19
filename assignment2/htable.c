@@ -6,6 +6,9 @@ htable_t *new_hash_table(int size) {
     table->nslots = size;
     table->slots = malloc(size*sizeof(slot_t));
     table->seed = SEED;
+    table->keys = malloc(size*sizeof(char *));
+    table->nkeys = 0;
+
     for(int i=0; i < table->nslots; i++) {
         table->slots[i].keys = NULL;
         table->slots[i].vals = NULL;
@@ -77,6 +80,7 @@ int hash_table_gets(htable_t *table, char *s, int *error) {
 
 
 void insert_to_slot(slot_t *slot, char *s, int val) {
+
     #ifdef PTHREADS
     pthread_mutex_lock(&slot->mut);
     #endif // PTHREADS
@@ -94,6 +98,7 @@ void insert_to_slot(slot_t *slot, char *s, int val) {
 
     char *cpy = malloc((strlen(s)+1) *(sizeof(char)));
     cpy = strcpy(cpy, s);
+    
     slot->keys[slot->written] = cpy;
     slot->vals[slot->written] = val;
     slot->written++;
@@ -104,6 +109,8 @@ void insert_to_slot(slot_t *slot, char *s, int val) {
 }
 
 void hash_table_put(htable_t *table, char *key, int val) {
+    table->keys[table->nkeys] = key;
+    table->nkeys++;
     int slotn = xorhash(key, table->seed, table->nslots);
     insert_to_slot(&table->slots[slotn], key, val);
 }
@@ -127,6 +134,7 @@ void free_slots(htable_t *table) {
 
 void free_hash_table(htable_t *table) {
     free_slots(table);
+    free(table->keys);
     free(table->slots);
     free(table);
 }
