@@ -14,24 +14,14 @@
 #include <math.h>
 #include <string.h>
 
-#ifdef PTHREADS
-#include <pthread.h>
-#endif // PTHREADS
-
 #include "hash.h"
-
 
 typedef struct {
     char **keys;
     int *vals;
     int cap;
     int written;
-    #ifdef PTHREADS
-    pthread_mutex_t mut;
-    #endif // PTHREADS
 } slot_t;
-
-
 
 typedef struct {
     slot_t *slots;
@@ -41,13 +31,7 @@ typedef struct {
     int nkeys;
 } htable_t;
 
-#ifdef PTHREADS
-typedef struct {
-    char *s;
-    int i;
-    htable_t *table;
-} async_arg_t;
-#endif // PTHREADS
+
 
 htable_t *new_hash_table(int);
 

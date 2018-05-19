@@ -1,5 +1,6 @@
 #include "hash.h"
 
+// Adapted from the lecture slides from COMP20007
 unsigned int xorhash(char *s, int seed, int m) {
     unsigned int h = seed;
     char c;

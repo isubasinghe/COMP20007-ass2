@@ -16,9 +16,6 @@
 
 warray_t *gen_edit_one(char *);
 
-warray_t *gen_edit_over(warray_t *);
-
-
 char *delete_gen(char *, int, int );
 
 char *insert_gen(char *, int, int , char );
