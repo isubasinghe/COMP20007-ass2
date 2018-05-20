@@ -8,10 +8,11 @@
 #include "spell.h"
 #include "lshtein.h"
 #include "gedit.h"
-
 #include "htable.h"
-#include "list.h"
 #include "warray.h"
+
+#include "list.h"
+
 
 
 // see Assignment Task 1: Computing edit distance
@@ -93,25 +94,27 @@ bool warray_in_hash(htable_t *table, warray_t *w) {
 	return in;
 }
 
-bool string_in_hash(htable_t *table, char *s) {
+bool string_in_dict(List *dictionary, char *s) {
 	bool in = 0;
 	int slen = strlen(s);
-	// Iterate through an order list of words in the hash table
-	for(int i=0; i < table->nkeys; i++) {
-		char *word = table->keys[i];
+	Node *curr = dictionary->head;
+
+	// Iterate through the dictionary
+	while(curr != NULL) {
+		char *word = curr->data;
 		int wlen = strlen(word);
-		// There is no way that the levenshtein distance
-		// will be less than 3 in this case
-		if(abs(slen - wlen) <= 3) {
-			if(ldist(word, s)==3) {
-				// We found the word that occurs first 
-				// in the dictionary and is at a levenshtein distance 
-				// of 1
+
+		// There is no possible way that the levenshtein
+		// distance is 3
+		if(abs(wlen-slen) <= 3) {
+			if(ldist(word, s) == 3) {
+				// We found a correctly spellable
+				// word so return 1
 				printf("%s\n", word);
 				return 1;
 			}
 		}
-
+		curr = curr->next;
 	}
 	return in;
 }
@@ -167,10 +170,10 @@ void print_corrected(List *dictionary, List *document) {
 				if(!found) {
 					// Levenshtein distance 3 is too expensive
 					// so just look through the dicitonary
-					found = string_in_hash(htable, (char *)curr->data);
+					found = string_in_dict(dictionary, (char *)curr->data);
 				}
 
-				// Word does not exist anywhere.
+				// Word does not exist in the dictionary.
 				if(!found) {
 					printf("%s?\n", (char *) curr->data);
 				}

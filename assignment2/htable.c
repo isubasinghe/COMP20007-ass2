@@ -7,14 +7,6 @@ htable_t *new_hash_table(int size) {
     table->slots = malloc(size*sizeof(slot_t));
     // Hashing seed
     table->seed = SEED;
-    // Instead of iterating 
-    // through the table we can 
-    // iterate through this.
-    // Which is a faster as it allows
-    // us to break if we find a match since 
-    // this array will be in order.
-    table->keys = malloc(size*sizeof(char *));
-    table->nkeys = 0;
 
     for(int i=0; i < table->nslots; i++) {
         table->slots[i].keys = NULL;
@@ -99,12 +91,6 @@ void insert_to_slot(slot_t *slot, char *s, int val) {
         slot->keys = realloc(slot->keys, slot->cap*sizeof(char *));
         slot->vals = realloc(slot->vals, slot->cap*sizeof(int));
     }
-
-    // This hash table was initially meant to be truly modular 
-    // (it isn't anymore, since table->keys does not allocate memory for char *)
-    // and not just for this assignment and therefore we 
-    // allocate memory for the keys since we don't know how long
-    // the pointer passed in will last.
     char *cpy = malloc((strlen(s)+1) *(sizeof(char)));
     cpy = strcpy(cpy, s);
     
@@ -116,9 +102,6 @@ void insert_to_slot(slot_t *slot, char *s, int val) {
 }
 
 void hash_table_put(htable_t *table, char *key, int val) {
-    // Store in an ordered array to speed up levenshtein distance
-    table->keys[table->nkeys] = key;
-    table->nkeys++;
     // Get the slot
     int slotn = xorhash(key, table->seed, table->nslots);
     insert_to_slot(&table->slots[slotn], key, val);
@@ -143,7 +126,6 @@ void free_slots(htable_t *table) {
 
 void free_hash_table(htable_t *table) {
     free_slots(table);
-    free(table->keys);
     free(table->slots);
     free(table);
 }

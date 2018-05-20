@@ -1,6 +1,10 @@
 #include "gedit.h"
 
-char *delete_gen(char *s, int slen, int i) {
+// function inlining is necessary here
+// since there are a lot of stacks being 
+// created otherwise
+
+inline char *delete_gen(char *s, int slen, int i) {
     // Allocate memory in order to store the string
     char *data = malloc((slen+1)*sizeof(char));
     // Ensure the null byte is set this way
@@ -21,7 +25,7 @@ char *delete_gen(char *s, int slen, int i) {
     return data;
 }
 
-char *edit_gen(char *s, int slen, int i, char c) {
+inline char *edit_gen(char *s, int slen, int i, char c) {
     // Memory for the string.
     char *data = malloc((slen+1)*sizeof(char));
     memcpy(data, s, strlen(s)+ 1);
@@ -30,7 +34,7 @@ char *edit_gen(char *s, int slen, int i, char c) {
     return data;
 }
 
-char *insert_gen(char *s, int slen, int i, char c) {
+inline char *insert_gen(char *s, int slen, int i, char c) {
     // Allocate memory for string.
     // plus 2 since memory size of s + 1
     char *data = malloc((slen + 2)*sizeof(char));

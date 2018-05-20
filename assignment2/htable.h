@@ -1,8 +1,6 @@
 #ifndef HTABLE_H
 #define HTABLE_H
 
-//#define PTHREADS
-
 #define SEED 73802
 #ifndef INITAL_SIZE
 #define INITAL_SIZE 2
@@ -27,8 +25,6 @@ typedef struct {
     slot_t *slots;
     int nslots;
     int seed;
-    char **keys;
-    int nkeys;
 } htable_t;
 
 

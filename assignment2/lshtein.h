@@ -5,18 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct {
-    int **data;
-    int m,n;
-} mat_t;
-
-mat_t new_matrix(int , int );
-
-int wmati(mat_t *, int, int , int ); // write mat index
-
-int rmati(mat_t *, int, int); // read mat index
-
-void free_matrix(mat_t *);
+int min3(int , int , int );
 
 int ldist(char *, char *);
 
