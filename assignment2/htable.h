@@ -35,7 +35,7 @@ void insert_to_slot(slot_t *, char *, int );
 
 bool slot_has(slot_t *, char *);
 
-int slot_get(slot_t *, char *);
+int slot_gets(slot_t *, char *, int *err);
 
 int hash_table_gets(htable_t *, char *, int *);
 
